@@ -1,0 +1,47 @@
+---
+- name: Set fact if ntp was previously installed
+  ansible.builtin.set_fact:
+    ntp_installed: true
+  when: >
+    ansible_facts.services["ntp.service"] is defined
+    and not ansible_facts.services["ntp.service"].status == 'disabled'
+
+- name: Set fact if ntp is running
+  ansible.builtin.set_fact:
+    ntp_running: true
+  when: >
+    ansible_facts.services["ntp.service"] is defined
+    and ansible_facts.services["ntp.service"].state == 'running'
+
+- name: Ensure ntp is stopped and disabled if running
+  ansible.builtin.service:
+    name: ntp
+    state: stopped
+    enabled: false
+  when: ntp_running
+
+- name: Ensure ntp is uninstalled if installed
+  ansible.builtin.package:
+    name: ntp
+    state: absent
+  when: ntp_installed
+
+- name: Ensure Chrony is installed
+  ansible.builtin.package:
+    name: chrony
+    state: present
+
+- name: Ensure Chrony configuration file exists
+  ansible.builtin.template:
+    src: templates/chrony/chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart ChronyD
+
+- name: Ensure ChronyD is enabled and running
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true

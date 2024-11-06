@@ -1,0 +1,34 @@
+- name: Provision Chrony & Zabbix Agent 2
+  hosts: all
+  become: true
+  remote_user: ansible
+  gather_facts: true
+
+  tasks:
+
+    - name: Ensure variables are included
+      ansible.builtin.include_vars: "{{ item }}"
+      with_items:
+        - vars/all.yml
+
+    - name: Ensure tasks are included
+      ansible.builtin.include_tasks: "{{ tasks }}"
+      with_items:
+        - tasks/users.yml
+        - tasks/chrony.yml
+        - tasks/zabbix.yml
+      loop_control:
+        loop_var: tasks
+      no_log: true
+
+  handlers:
+
+    - name: Restart ChronyD
+      ansible.builtin.service:
+        name: chronyd
+        state: restarted
+
+    - name: Restart Zabbix Agent
+      ansible.builtin.service:
+        name: zabbix-agent2
+        state: restarted

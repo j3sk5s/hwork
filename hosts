@@ -1,0 +1,14 @@
+[AAA]
+hostname1
+hostname4
+
+[AAA:vars]
+ntp_server=ntp.cert.lv
+
+[ZZZ]
+hostname2
+hostname3
+hostname5
+
+[ZZZ:vars]
+ntp_server=ntp1.0x00.lv

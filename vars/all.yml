@@ -1,0 +1,19 @@
+ntp_installed: []
+ntp_running: []
+
+users:
+  user1:
+    name: user1
+    shell: /bin/bash
+  user2:
+    name: user2
+    shell: /bin/bash
+
+sudoers:
+  file: /etc/sudoers.d/users
+
+zabbix:
+  repo_package_redhat: https://repo.zabbix.com/zabbix/7.0/rhel/9/x86_64/zabbix-release-latest.el9.noarch.rpm
+  repo_package_ubuntu: https://repo.zabbix.com/zabbix/7.0/ubuntu-arm64/pool/main/z/zabbix-release/zabbix-release_latest+ubuntu24.04_all.deb
+  server_fqdn: zabbix.example.com
+  agent2_conf: /etc/zabbix/zabbix_agent2.conf
